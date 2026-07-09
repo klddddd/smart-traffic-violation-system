@@ -128,6 +128,29 @@ def reviewer_auth_headers(reviewer_user: User) -> dict[str, str]:
 
 
 @pytest.fixture()
+def admin_user(db: Session, seeded_roles) -> User:
+    user = User(
+        username="admin1",
+        password_hash=hash_password("pass1234"),
+        email="admin@example.com",
+        role_id=seeded_roles["admin"].id,
+    )
+    db.add(user)
+    db.commit()
+    return user
+
+
+@pytest.fixture()
+def admin_token(admin_user: User) -> str:
+    return create_access_token(subject=str(admin_user.id), role="admin")
+
+
+@pytest.fixture()
+def admin_auth_headers(admin_token: str) -> dict[str, str]:
+    return {"Authorization": f"Bearer {admin_token}"}
+
+
+@pytest.fixture()
 def pending_case(db: Session, citizen_user: User):
     ev = IntakeEvent(source_type="citizen", source_id=citizen_user.id, image_hash="pend1",
                      location_text="路口A")
