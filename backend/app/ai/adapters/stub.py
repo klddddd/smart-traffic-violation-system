@@ -19,7 +19,7 @@ class StubYoloDetector(YoloDetector):
             objects=[{"label": "car", "confidence": 0.92, "bbox": [100, 200, 300, 350]}],
             vehicle_bbox=[100, 200, 300, 350],
             plate_bbox=[120, 230, 200, 270],
-            annotated_image_path=image_path,
+            annotated_image_path=None,  # stub 不产标注图；real 实现返回持久化 URL
             model_version="stub-yolov8n",
         )
 

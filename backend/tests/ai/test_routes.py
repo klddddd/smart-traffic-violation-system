@@ -49,6 +49,15 @@ def test_ocr_plate_requires_auth(client):
     assert resp.status_code == 401
 
 
+def test_ocr_plate_citizen_forbidden(client, citizen_user, auth_headers):
+    resp = client.post(
+        "/internal/ai/ocr/plate",
+        headers=auth_headers,
+        files={"image": ("a.jpg", JPEG, "image/jpeg")},
+    )
+    assert resp.status_code == 403
+
+
 def test_rules_evaluate_speed_matched(client, reviewer_user, reviewer_auth_headers):
     body = {
         "detection": {"objects": [], "vehicle_bbox": None, "plate_bbox": None, "annotated_image_url": None, "model_version": ""},
@@ -68,6 +77,11 @@ def test_rules_evaluate_requires_auth(client):
     assert resp.status_code == 401
 
 
+def test_rules_evaluate_citizen_forbidden(client, citizen_user, auth_headers):
+    resp = client.post("/internal/ai/rules/evaluate", headers=auth_headers, json={})
+    assert resp.status_code == 403
+
+
 def test_review_text_success(client, reviewer_user, reviewer_auth_headers):
     resp = client.post(
         "/internal/ai/review/text",
@@ -83,3 +97,8 @@ def test_review_text_success(client, reviewer_user, reviewer_auth_headers):
 def test_review_text_citizen_forbidden(client, citizen_user, auth_headers):
     resp = client.post("/internal/ai/review/text", headers=auth_headers, json={})
     assert resp.status_code == 403
+
+
+def test_review_text_requires_auth(client):
+    resp = client.post("/internal/ai/review/text", json={})
+    assert resp.status_code == 401
