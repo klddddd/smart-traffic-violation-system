@@ -1,4 +1,6 @@
 # app/schemas/violation.py
+from datetime import datetime
+
 from pydantic import BaseModel
 
 
@@ -11,7 +13,7 @@ class ViolationOut(BaseModel):
     fine_amount: int
     points: int
     status: str
-    occurred_at: str | None = None
+    occurred_at: datetime | None = None
     location_text: str | None = None
 
     model_config = {"from_attributes": True}
